@@ -103,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
                 sendUsertoSettingActivity();
         }else  if(item.getItemId()==R.id.main_find_friends_option){
 
+            Intent intent=new Intent(MainActivity.this,FindFriends.class);
+            startActivity(intent);
+
         }else if(item.getItemId()==R.id.main_create_group_option){
                 RequestNewGroup();
         }
