@@ -1,6 +1,7 @@
 package com.example.whatsapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -37,6 +38,8 @@ public class SettingActivity extends AppCompatActivity {
     private  FirebaseAuth mAuth;
     private  DatabaseReference rootRef;
 
+    private  static  final  int GALLERY_PIC=1;
+
 
 
 
@@ -54,6 +57,19 @@ public class SettingActivity extends AppCompatActivity {
 
         userName.setVisibility(View.INVISIBLE);
         RetriveUserInfo();
+        userProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                    Intent intent=new Intent();
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(intent,GALLERY_PIC);
+
+
+            }
+        });
+
 
 
 
@@ -85,8 +101,21 @@ public class SettingActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==GALLERY_PIC && resultCode==RESULT_OK && data.getData()!=null)
+        {
+
+        }
 
 
+
+
+
+
+    }
 
     private void UpdateSettings() {
 

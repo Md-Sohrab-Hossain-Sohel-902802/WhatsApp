@@ -1,5 +1,6 @@
 package com.example.whatsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -39,7 +41,7 @@ public class GroupsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          view= inflater.inflate(R.layout.fragment_groups, container, false);
 
@@ -51,6 +53,18 @@ public class GroupsFragment extends Fragment {
          REtriveAndDisplayGroups();
 
 
+         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+             @Override
+             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 String groupName=parent.getItemAtPosition(position).toString();
+
+                 Intent intent=new Intent(getContext(),GroupsChatActivity.class);
+                 intent.putExtra("groupName",groupName);
+                 startActivity(intent);
+
+
+             }
+         });
 
 
 
