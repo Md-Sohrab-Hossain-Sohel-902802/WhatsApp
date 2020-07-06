@@ -4,13 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ContactFragment">
+    tools:context=".RequestFragment">
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/contact_list_RecyclerViewid"
+        android:id="@+id/chat_request_list"
         />
+
+
+
 
 
 </RelativeLayout>
