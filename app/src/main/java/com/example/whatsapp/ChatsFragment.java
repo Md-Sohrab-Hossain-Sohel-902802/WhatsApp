@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -37,6 +39,8 @@ public class ChatsFragment extends Fragment {
     private  FirebaseAuth mAuth;
     private  DatabaseReference chatsRef,userRef;
     private  String currentUserid;
+
+
 
     public ChatsFragment() {
 
@@ -103,6 +107,7 @@ public class ChatsFragment extends Fragment {
 
                                 final String name=snapshot.child("name").getValue().toString();
                                 String status=snapshot.child("status").getValue().toString();
+                                final String ritImage2=snapshot.child("image").getValue().toString();
 
 
                                 holder.nameTextview.setText(name);
@@ -115,6 +120,7 @@ public class ChatsFragment extends Fragment {
 
                                         intent.putExtra("visit_user_id",userIds);
                                         intent.putExtra("visit_user_name",name);
+                                        intent.putExtra("visit_user_image",ritImage2);
 
                                         startActivity(intent);
                                     }

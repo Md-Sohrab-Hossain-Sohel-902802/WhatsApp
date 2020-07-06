@@ -38,13 +38,13 @@
             android:id="@+id/input_message"
             android:hint="Aa"
             android:padding="15dp"
-            android:layout_width="335dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"/>
 
 
 
         <ImageButton
-            android:layout_width="60dp"
+            android:layout_width="52dp"
             android:layout_height="wrap_content"
             android:id="@+id/send_message_btn"
             android:src="@drawable/send_message"
