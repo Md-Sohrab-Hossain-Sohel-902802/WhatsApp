@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -43,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     //<-------------------------Firebase Variable-------------------------------->
 
     private  FirebaseAuth mAuth;
-    private   DatabaseReference databaseReference;
+    private   DatabaseReference databaseReference,rootRef;
 
 
 
@@ -64,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth=FirebaseAuth.getInstance();
         databaseReference=FirebaseDatabase.getInstance().getReference();
+        rootRef=FirebaseDatabase.getInstance().getReference().child("Users");
 
 
 
@@ -122,11 +124,11 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-
-
+                           String deviceToken= FirebaseInstanceId.getInstance().getToken();
                             String currentUsrid=mAuth.getCurrentUser().getUid();
 
 
+                            rootRef.child(currentUsrid).child("deviceToken").setValue(deviceToken);
 
 
                             databaseReference.child("Users").child(currentUsrid).setValue("");

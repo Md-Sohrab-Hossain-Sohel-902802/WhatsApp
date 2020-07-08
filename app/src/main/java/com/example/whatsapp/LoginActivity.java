@@ -19,6 +19,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+
+    private DatabaseReference  usersRef;
 
 
 
@@ -61,6 +65,9 @@ public class LoginActivity extends AppCompatActivity {
 
         Initialize();
         mAuth=FirebaseAuth.getInstance();
+        usersRef= FirebaseDatabase.getInstance().getReference().child("Users");
+
+
         needNewAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,9 +125,23 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        sendUserToMainActivity();
-                      Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                        loadinBar.dismiss();
+
+                        String currentUserid=mAuth.getCurrentUser().getUid();
+                        String deviceToken= FirebaseInstanceId.getInstance().getToken();
+                        usersRef.child(currentUserid).child("deviceToken")
+                                .setValue(deviceToken)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    sendUserToMainActivity();
+                                                    Toast.makeText(LoginActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                                                    loadinBar.dismiss();
+                                                }
+
+                                    }
+                                });
+
                     }else{
                         loadinBar.dismiss();
                         Toast.makeText(LoginActivity.this, "Something Problem : "+task.getException().toString(), Toast.LENGTH_SHORT).show();
