@@ -104,7 +104,6 @@ public class ChatsFragment extends Fragment {
 
                                     Picasso.get().load(ritImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
                                 }
-
                                 final String name=snapshot.child("name").getValue().toString();
                                 String status=snapshot.child("status").getValue().toString();
                                 final String ritImage2=snapshot.child("image").getValue().toString();
@@ -113,7 +112,30 @@ public class ChatsFragment extends Fragment {
                                 holder.nameTextview.setText(name);
                                 holder.statusTextview.setText("Last Seen : ");
 
-                                holder.itemView.setOnClickListener(new View.OnClickListener() {
+
+
+                                if(snapshot.child("userState").hasChild("state")){
+                                    String state=snapshot.child("userState").child("state").getValue().toString();
+                                    String date=snapshot.child("userState").child("date").getValue().toString();
+                                    String time=snapshot.child("userState").child("time").getValue().toString();
+
+                                    if(state.equals("online")){
+                                        holder.statusTextview.setText("online");
+                                        holder.onlineStatus.setVisibility(View.VISIBLE);
+
+                                    }else if(state.equals("offline")){
+                                        holder.statusTextview.setText("Last seen : "+date+"      "+time);
+
+                                    }
+
+
+
+
+                                }else{
+                                    holder.statusTextview.setText("offline");
+                                }
+
+                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         Intent intent=new Intent(getContext(),ChatActivity.class);

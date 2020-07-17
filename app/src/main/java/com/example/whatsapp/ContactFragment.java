@@ -83,7 +83,8 @@ public class ContactFragment extends Fragment {
                 userRef.child(usersId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.hasChild("image")){
+                        if(snapshot.exists()){
+                            if(snapshot.hasChild("image")){
                                 String image=snapshot.child("image").getValue().toString();
                                 String name=snapshot.child("name").getValue().toString();
                                 String status=snapshot.child("status").getValue().toString();
@@ -95,16 +96,39 @@ public class ContactFragment extends Fragment {
 
 
 
-                        }else{
-                         String name=snapshot.child("name").getValue().toString();
-                            String status=snapshot.child("status").getValue().toString();
+                            }else{
+                                String name=snapshot.child("name").getValue().toString();
+                                String status=snapshot.child("status").getValue().toString();
 
 
-                            holder.nameTextview.setText(name);
-                            holder.statusTextview.setText(status);
-                            Picasso.get().load(R.drawable.profile_image).into(holder.profileImage);
+                                holder.nameTextview.setText(name);
+                                holder.statusTextview.setText(status);
+                                Picasso.get().load(R.drawable.profile_image).into(holder.profileImage);
 
+                            }
+                            if(snapshot.child("userState").hasChild("state")){
+                                String state=snapshot.child("userState").child("state").getValue().toString();
+                                String date=snapshot.child("userState").child("date").getValue().toString();
+                                String time=snapshot.child("userState").child("time").getValue().toString();
+
+                                if(state.equals("online")){
+                                    holder.statusTextview.setText("online");
+                                    holder.onlineStatus.setVisibility(View.VISIBLE);
+
+                                }else if(state.equals("offline")){
+                                    holder.statusTextview.setText("Last seen : "+date+"      "+time);
+
+                                }
+
+
+
+
+                            }else{
+                                holder.statusTextview.setText("offline");
+                            }
                         }
+
+
                     }
 
                     @Override

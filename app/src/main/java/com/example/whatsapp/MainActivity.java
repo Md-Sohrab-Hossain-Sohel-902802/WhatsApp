@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.ProtectionDomain;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -44,10 +50,12 @@ public class MainActivity extends AppCompatActivity {
 
     //<-----------------Firebase Variables----------------------->
 
-    private FirebaseUser currentUser;
     private FirebaseAuth mAuth;
     private  DatabaseReference rootRef;
 
+    String currentUserid;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +68,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("WhatsApp");
 
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setTitle("Loading.....");
+        progressDialog.setMessage("Please Wait");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
 
         //<--------------------------------Setup View Pager ------------------------------------>
         mAuth = FirebaseAuth.getInstance();
-        rootRef= FirebaseDatabase.getInstance().getReference();
+       rootRef= FirebaseDatabase.getInstance().getReference();
 
         myViewPager=findViewById(R.id.main_tabs_pager);
         myTabAccessorAdapter=new TabsAccessorAdapter(getSupportFragmentManager());
@@ -96,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
 
         if(item.getItemId()==R.id.main_logout_option){
+            updateUserstatus("offline");
             mAuth.signOut();
             setdUserToLoginActivity();
 
@@ -188,7 +203,9 @@ public class MainActivity extends AppCompatActivity {
         if(currentUser==null){
             setdUserToLoginActivity();
         }else{
-            
+
+            updateUserstatus("online");
+
             VerifyUserExistance();
             
         }
@@ -202,6 +219,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if(currentUser!=null){
+            updateUserstatus("offline");
+        }
+
+
+
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if(currentUser!=null){
+            updateUserstatus("offline");
+        }
+
+    }
 
     private void setdUserToLoginActivity() {
 
@@ -232,11 +274,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if((snapshot.child("name").exists())){
-
-                    Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
 
                 }else{
                      sendUsertoSettingActivity();
+                     progressDialog.dismiss();
                 }
             }
 
@@ -249,7 +291,47 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private  void updateUserstatus(String state){
 
+        String saveCurrentTime,saveCurrentDate;
+        Calendar calendar=Calendar.getInstance();
+
+        SimpleDateFormat currentDate=new SimpleDateFormat("MM dd,yyyy");
+        saveCurrentDate=currentDate.format(calendar.getTime());
+
+        SimpleDateFormat currentTime=new SimpleDateFormat("hh:mm a");
+        saveCurrentTime=currentTime.format(calendar.getTime());
+
+
+
+        HashMap<String, Object> onlineMap=new HashMap<>();
+        onlineMap.put("time",saveCurrentTime);
+        onlineMap.put("date",saveCurrentDate);
+        onlineMap.put("state",state);
+
+
+
+    currentUserid=mAuth.getCurrentUser().getUid();
+
+    rootRef.child("Users").child(currentUserid).child("userState")
+            .updateChildren(onlineMap);
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+
+
+ 
 
 
 
