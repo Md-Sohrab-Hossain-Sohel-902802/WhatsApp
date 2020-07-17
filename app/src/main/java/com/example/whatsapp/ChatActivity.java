@@ -192,7 +192,7 @@ public class ChatActivity extends AppCompatActivity {
         userImage=findViewById(R.id.custom_profile_image);
         userName=findViewById(R.id.custom_profile_name);
         userLastseen=findViewById(R.id.custom_user_last_seen);
-
+//I am addded an comment
 
         sendMessageButton=findViewById(R.id.send_message_btn);
         messageInputText=findViewById(R.id.input_message);
